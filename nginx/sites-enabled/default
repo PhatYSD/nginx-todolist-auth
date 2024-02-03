@@ -1,0 +1,23 @@
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+    # security
+    include nginxconfig.io/security.conf;
+
+	server_name _;
+
+	location / {
+		root /var/www/html;
+		index index.html index.htm index.nginx-debian.html;
+		try_files $uri $uri/ /index.html;
+        include nginxconfig.io/proxy.conf;
+	}
+
+	location /api/ {
+		proxy_pass http://server:5000/;
+		include nginxconfig.io/proxy.conf;
+	}
+
+    include nginxconfig.io/general.conf;
+}

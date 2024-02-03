@@ -1,0 +1,25 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["linux-musl-openssl-3.0.x", "windows"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String     @id @default(uuid())
+  username String     @unique
+  password String
+  todoList TodoList[]
+}
+
+model TodoList {
+  id     String  @id @default(uuid())
+  userId String
+  do     Boolean @default(false)
+  list   String
+
+  user User @relation(fields: [userId], references: [id])
+}
