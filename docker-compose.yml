@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  server:
+    container_name: nginx_crud_auth_server
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - postgresql
+    env_file: .env
+    environment:
+      NODE_ENV: $NODE_ENV
+      PORT: $PORT
+      JWT_SECRET_ACCESS_TOKEN: $JWT_SECRET_ACCESS_TOKEN
+      JWT_SECRET_REFRESH_TOKEN: $JWT_SECRET_REFRESH_TOKEN
+      DATABASE_URL: $DATABASE_URL
+    stdin_open: true
+    tty: true
+
+  postgresql:
+    container_name: nginx_crud_auth_postgresql
+    image: postgres:16.1-alpine3.18
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DB: $POSTGRES_DB
+
+  nginx:
+    container_name: nginx_crud_auth_nginx
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      VITE_JWT_SECRET_REFRESH_TOKEN: $VITE_JWT_SECRET_REFRESH_TOKEN
+    volumes:
+      - ./nginx/:/etc/nginx
+    depends_on:
+      - server
+    ports:
+      - 80:80
+      - 443:443

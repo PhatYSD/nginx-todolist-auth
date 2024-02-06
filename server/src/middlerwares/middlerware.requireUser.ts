@@ -1,3 +1,5 @@
+// Middlerware make to error when not found user from examineToken
+
 import createHttpError from "http-errors";
 import { Response, NextFunction } from "express";
 

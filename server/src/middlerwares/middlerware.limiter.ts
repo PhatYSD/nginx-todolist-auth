@@ -1,3 +1,5 @@
+// Make limiter request per IP address, 100 requests per 15 minute
+
 import rateLimit from "express-rate-limit";
 
 const limiter = rateLimit({

@@ -13,11 +13,11 @@ export default async function errorHandler(error: any, _req: Request, res: Respo
         message: "Internal Server Error."
     };
 
-    if (isHttpError(error)) {
+    if (isHttpError(error)) /* Know Error */ {
         errorResponse.statusCode = error.statusCode;
         errorResponse.message = error.message;
     }
-    else if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    else if (error instanceof Prisma.PrismaClientKnownRequestError) /* Prisma Know Error */ {
         if (error.code === "P2002") {
             errorResponse.statusCode = 409;
             errorResponse.message = `Conflict - Duplicate data found: ${error.meta?.target}`;
@@ -30,16 +30,16 @@ export default async function errorHandler(error: any, _req: Request, res: Respo
             errorResponse.statusCode = 404;
             errorResponse.message = `Not Found - The table does not exist in the current database: ${error.meta?.target}`;
         }
-        else {
+        else /* Prisma Unknow Error */ {
             console.log(error.code);
             errorResponse.message = `Prisma Error - ${error.message}`;
         }
     }
-    else if (error instanceof Prisma.PrismaClientValidationError) {
+    else if (error instanceof Prisma.PrismaClientValidationError) /* Prisma Validate Error */ {
         errorResponse.statusCode = 400;
         errorResponse.message = `Bad Request - Invalid value in request.`;
     }
-    else if (error instanceof Error) {
+    else if (error instanceof Error) /* Unknow Error */ {
         errorResponse.message = error.message || "Internal Server Error.";
     }
 

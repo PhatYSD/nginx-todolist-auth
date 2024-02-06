@@ -32,7 +32,7 @@ server.use(limiter);
 // Use cookie
 server.use(cookieParser());
 
-// Check and create token
+// Check and create access token token
 server.use(examineToken);
 // Use application
 server.use(app);
